@@ -10,9 +10,9 @@ done<br />
 2.done<br />
 3.done<br />
 4.done<br />
-5.<br />
-6.<br />
-7.<br />
+5.done - Ewa<br />
+6.done - Ewa<br />
+7.done - Ewa<br />
 
 ####Exercise 1c<br />
 1.1<br />
