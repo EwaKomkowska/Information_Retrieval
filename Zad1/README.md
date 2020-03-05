@@ -24,9 +24,9 @@ done<br />
 2. done - Ewa<br />
 
 ####Exercise 1e<br />
-1.Beata<br />
-2.1<br />
-2.2<br />
+1. done - Beata<br />
+2.1 done - Beata<br />
+2.2 done - Beata<br />
 
 ###Exercise 2 (mark 4.0)<br />
 1.<br />
