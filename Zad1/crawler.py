@@ -43,6 +43,8 @@ class LIFO_Policy:
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
         self.queue.extend(pList)
+        if len(self.queue)==0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
 ##-------------------------------------------------------------------------
 
@@ -64,6 +66,8 @@ class FIFO_Policy:
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
         self.queue.extend(pList)
+        if len(self.queue)==0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
 
 ##-------------------------------------------------------------------------
@@ -139,9 +143,10 @@ def main():
         # Prepare a next page to be fetched
         generate(c, iteration)
         if (c.toFetch == None):
+            c.toFetch = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"
             if c.debug:
                 print("   No page to fetch!")
-            continue
+            #continue
                 
         # Generate: it downloads html page under "toFetch URL"
         page = fetch(c)
@@ -214,11 +219,8 @@ def inject(c):
 # Produce next URL to be fetched (DONE)
 def generate(c, iteration):
     url = c.generatePolicy.getURL(c, iteration)
-    if url == None:
-        if c.debug:
-            print("   Fetch: error")
-        c.toFetch = None
-        return None
+    if url==None:
+        url = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"
     # WITH NO DEBUG!
     print("   Next page to be fetched = " + str(url)) 
     c.toFetch = url
