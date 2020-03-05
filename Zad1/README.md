@@ -15,9 +15,9 @@ done<br />
 7.done - Ewa<br />
 
 ####Exercise 1c<br />
-1.1<br />
-1.2<br />
-2.<br />
+1.1. done - Ewa<br />
+1.2. done - Ewa<br />
+2. done - Ewa<br />
 
 ####Exercise 1d<br />
 1.<br />
