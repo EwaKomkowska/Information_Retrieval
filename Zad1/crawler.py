@@ -25,13 +25,13 @@ class Dummy_Policy:
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pass
 
+
 #################################################
-        
 class LIFO_Policy:
     def __init__(self, c):
         self.queue = c.seedURLs
         
-    def getURL(self):
+    def getURL(self, c, iteration):
         if len(self.queue) == 0:
             return None
         else:
@@ -40,13 +40,20 @@ class LIFO_Policy:
             return lastElem
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
-        pass    
-#-------------------------------------------------------------------------
+        #tmpList = sorted(retrievedURLs)   #to chyba nie starczy?
+        tmpList = retrievedURLs
+        sorted(tmpList, key=lambda url: url[len(url) - url[::-1].index('/'):])
+        self.queue.extend(tmpList)
+
+##-------------------------------------------------------------------------
+
+
 ###################################
 class Parser (HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
-        self.output_list = [ ]
+        self.output_list = []
+
     def handle_starttag(self, tag, attrs): 
         if tag == 'a':
             self.output_list.append(dict(attrs).get('href'))
@@ -62,8 +69,7 @@ class Container:
         # Root (host) page
         self.rootPage = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + self.example
         # Initial links to visit
-        self.seedURLs = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/"
-            + self.example + "/s0.html"]
+        self.seedURLs = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + self.example + "/s0.html"]
         # Maintained URLs
         self.URLs = set([])
         # Outgoing URLs (from -> list of outgoing links)
@@ -71,11 +77,11 @@ class Container:
          # Incoming URLs (to <- from; set of incoming links)
         self.incomingURLs = {}
         # Class which maintains a queue of urls to visit. 
-        self.generatePolicy = Dummy_Policy()
+        self.generatePolicy = LIFO_Policy(self)          #Dummy_Policy()
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler. 
-        self.iterations = 3
+        self.iterations = 10
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
