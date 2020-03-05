@@ -17,20 +17,21 @@ from html.parser import HTMLParser
 # Dummy fetch policy. Returns first element. Does nothing ;)
 class Dummy_Policy:
     def getURL(self, c, iteration):
-        if len(c.URLs) == 1:
+        if len(c.URLs) == 0:
             return None
         else:
             return c.seedURLs[0]
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pass
-    
-    
+
+
 #################################################
 class LIFO_Cycle_Policy:
     def __init__(self, c):
         self.queue = c.seedURLs
         self.fetched = set([])
+
 
     def getURL(self, c, iteration):
         if len(self.queue) <= 0:
@@ -59,7 +60,7 @@ class LIFO_Cycle_Policy:
             #print("Queue: ", self.queue)
 
             return lastElem
-            
+
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
