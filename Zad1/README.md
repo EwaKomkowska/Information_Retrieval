@@ -2,42 +2,42 @@
 
 ###Exercise 1 (mark 3.0)
 
-####Exercise 1a
-done
+####Exercise 1a <br />
+done<br />
 
-####Exercise 1b
-1.
-2.
-3.
-4.
-5.
-6.
-7.
+####Exercise 1b <br />
+1.<br />
+2.<br />
+3.<br />
+4.<br />
+5.<br />
+6.<br />
+7.<br />
 
-####Exercise 1c
-1.1
-1.2
-2.
+####Exercise 1c<br />
+1.1<br />
+1.2<br />
+2.<br />
 
-####Exercise 1d
-1.
-2.
+####Exercise 1d<br />
+1.<br />
+2.<br />
 
-####Exercise 1e
-1.
-2.1
-2.2
+####Exercise 1e<br />
+1.<br />
+2.1<br />
+2.2<br />
 
-###Exercise 2 (mark 4.0)
-1.
-2.
-3.
-4.
-5.
-6.
+###Exercise 2 (mark 4.0)<br />
+1.<br />
+2.<br />
+3.<br />
+4.<br />
+5.<br />
+6.<br />
 
-###Exercise 3 (mark 5.0)
-1.
-2.
-3.
-4.
+###Exercise 3 (mark 5.0)<br />
+1.<br />
+2.<br />
+3.<br />
+4.<br />
