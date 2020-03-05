@@ -24,7 +24,7 @@ done<br />
 2. done - Ewa<br />
 
 ####Exercise 1e<br />
-1.<br />
+1.Beata<br />
 2.1<br />
 2.2<br />
 
