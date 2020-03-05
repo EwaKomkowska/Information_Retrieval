@@ -40,10 +40,9 @@ class LIFO_Policy:
             return lastElem
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
-        #tmpList = sorted(retrievedURLs)   #to chyba nie starczy?
-        tmpList = retrievedURLs
-        sorted(tmpList, key=lambda url: url[len(url) - url[::-1].index('/'):])
-        self.queue.extend(tmpList)
+        pList = list(retrievedURLs)
+        pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
+        self.queue.extend(pList)
 
 ##-------------------------------------------------------------------------
 
@@ -241,30 +240,43 @@ def parse(c, page, iteration):
 #-------------------------------------------------------------------------  
 # Normalise newly obtained links (TODO)
 def getNormalisedURLs(retrievedURLs):
-    return retrievedURLs
+    myList = [elem.lower() for elem in retrievedURLs]
+    unique = []
+    for elem in myList:
+        if elem not in unique:
+            unique.append(elem)
+
+    return unique
     
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
+
+
 # Remove duplicates (duplicates) (TODO)
 def removeDuplicates(c, retrievedURLs):
-    # 
     newList = []
     for elem in retrievedURLs:
         if elem not in c.URLs:
             newList.append(elem)
     return newList
 
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
+
+
 # Filter out some URLs (TODO)
 def getFilteredURLs(c, retrievedURLs):
     toLeft = set([url for url in retrievedURLs if url.lower().startswith(c.rootPage)])
+    if c.toFetch in toLeft:
+        toLeft.remove(c.toFetch)
+
     if c.debug:
         print("   Filtered out " + str(len(retrievedURLs) - len(toLeft)) + " urls")  
     return toLeft
     
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
+
+
 # Store HTML pages (DONE)  
 def storePage(c, htmlData):
-    
     relBeginIndex = len(c.rootPage)
     totalPath = "./" + c.example + "/pages/" + c.toFetch[relBeginIndex + 1:]
     
@@ -303,7 +315,7 @@ def storeURLs(c):
         f.close()
         
    
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
 # Update outgoing links (DONE)  
 def updateOutgoingURLs(c, retrievedURLsWD):
     if c.toFetch not in c.outgoingURLs:
@@ -311,7 +323,9 @@ def updateOutgoingURLs(c, retrievedURLsWD):
     for url in retrievedURLsWD:
         c.outgoingURLs[c.toFetch].add(url)
         
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
+
+
 # Update incoming links (DONE)  
 def updateIncomingURLs(c, retrievedURLsWD):
     for url in retrievedURLsWD:
@@ -319,7 +333,9 @@ def updateIncomingURLs(c, retrievedURLsWD):
             c.incomingURLs[url] = set([])
         c.incomingURLs[url].add(c.toFetch)
     
-#-------------------------------------------------------------------------  
+#-------------------------------------------------------------------------
+
+
 # Store outgoing URLs (DONE)  
 def storeOutgoingURLs(c):
     relBeginIndex = len(c.rootPage)
@@ -370,7 +386,6 @@ def storeIncomingURLs(c):
                 f.write(line + " " + l + "\n")
         f.close()
         
-
 
 if __name__ == "__main__":
     main()
