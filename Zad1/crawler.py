@@ -47,6 +47,28 @@ class LIFO_Policy:
 ##-------------------------------------------------------------------------
 
 
+#################################################
+class FIFO_Policy:
+    def __init__(self, c):
+        self.queue = c.seedURLs
+
+    def getURL(self, c, iteration):
+        if len(self.queue) == 0:
+            return None
+        else:
+            firstElem = self.queue[0]
+            self.queue.remove(firstElem)
+            return firstElem
+
+    def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
+        pList = list(retrievedURLs)
+        pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
+        self.queue.extend(pList)
+
+
+##-------------------------------------------------------------------------
+
+
 ###################################
 class Parser (HTMLParser):
     def __init__(self):
@@ -76,7 +98,7 @@ class Container:
          # Incoming URLs (to <- from; set of incoming links)
         self.incomingURLs = {}
         # Class which maintains a queue of urls to visit. 
-        self.generatePolicy = LIFO_Policy(self)          #Dummy_Policy()
+        self.generatePolicy = FIFO_Policy(self)          #Dummy_Policy()
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler. 
