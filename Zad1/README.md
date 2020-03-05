@@ -20,8 +20,8 @@ done<br />
 2. done - Ewa<br />
 
 ####Exercise 1d<br />
-1.<br />
-2.<br />
+1. done - Ewa<br />
+2. done - Ewa<br />
 
 ####Exercise 1e<br />
 1.<br />
