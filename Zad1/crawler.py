@@ -27,6 +27,48 @@ class Dummy_Policy:
 
 
 #################################################
+class LIFO_Cycle_Policy:
+    def __init__(self, c):
+        self.queue = c.seedURLs
+        self.fetched = set([])
+
+    def getURL(self, c, iteration):
+        if len(self.queue) <= 0:
+            self.queue = c.seedURLs
+            self.fetched = set([])
+            print("wyczyscilem\n")
+
+        else:
+            lastElem = self.queue[-1]
+
+            while lastElem in self.fetched:
+                self.queue.remove(lastElem)
+                #print("Remove fetched: ", self.fetched)
+                #print("Quee remove: ", self.queue)
+                if len(self.queue) > 0:
+                    lastElem = self.queue[-1]
+                else:
+                    self.queue = c.seedURLs
+                    self.fetched = set([])
+                    lastElem = None
+                    #print("wyczyscilem\n")
+                    break
+
+            self.fetched.add(lastElem)
+            #print("FEtched: ", self.fetched)
+            #print("Queue: ", self.queue)
+
+            return lastElem
+
+    def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
+        pList = list(retrievedURLs)
+        pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
+        self.queue.extend(pList)
+        if len(self.queue) == 0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
+
+
+#################################################
 class LIFO_Policy:
     def __init__(self, c):
         self.queue = c.seedURLs
@@ -43,6 +85,8 @@ class LIFO_Policy:
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
         self.queue.extend(pList)
+        if len(self.queue) == 0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
 ##-------------------------------------------------------------------------
 
@@ -64,6 +108,8 @@ class FIFO_Policy:
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
         self.queue.extend(pList)
+        if len(self.queue)==0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
 
 ##-------------------------------------------------------------------------
@@ -86,7 +132,7 @@ class Container:
         # The name of the crawler"
         self.crawlerName = "IRbot"
         # Example ID
-        self.example = "exercise1"
+        self.example = "exercise3"
         # Root (host) page
         self.rootPage = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + self.example
         # Initial links to visit
@@ -98,11 +144,11 @@ class Container:
          # Incoming URLs (to <- from; set of incoming links)
         self.incomingURLs = {}
         # Class which maintains a queue of urls to visit. 
-        self.generatePolicy = FIFO_Policy(self)          #Dummy_Policy()
+        self.generatePolicy = LIFO_Cycle_Policy(self)          #Dummy_Policy()
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler. 
-        self.iterations = 10
+        self.iterations = 5
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
@@ -139,9 +185,10 @@ def main():
         # Prepare a next page to be fetched
         generate(c, iteration)
         if (c.toFetch == None):
+            c.toFetch = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"
             if c.debug:
                 print("   No page to fetch!")
-            continue
+            #continue
                 
         # Generate: it downloads html page under "toFetch URL"
         page = fetch(c)
@@ -214,11 +261,8 @@ def inject(c):
 # Produce next URL to be fetched (DONE)
 def generate(c, iteration):
     url = c.generatePolicy.getURL(c, iteration)
-    if url == None:
-        if c.debug:
-            print("   Fetch: error")
-        c.toFetch = None
-        return None
+    if url==None:
+        url = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"
     # WITH NO DEBUG!
     print("   Next page to be fetched = " + str(url)) 
     c.toFetch = url
