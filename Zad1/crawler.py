@@ -34,10 +34,17 @@ class LIFO_Cycle_Policy:
         
     def getURL(self, c, iteration):
         if len(self.queue) == 0:
+            self.queue = c.seedURLs
+            self.fetched = set([])
             return None
         else:
             lastElem = self.queue[-1]
-            self.queue.remove(lastElem)
+            if lastElem in self.fetched:
+                self.queue.remove(lastElem)
+                self.getURL(c, iteration)
+                return None
+                
+            self.fetched.add(lastElem)
             return lastElem
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
@@ -124,7 +131,7 @@ class Container:
          # Incoming URLs (to <- from; set of incoming links)
         self.incomingURLs = {}
         # Class which maintains a queue of urls to visit. 
-        self.generatePolicy = FIFO_Policy(self)          #Dummy_Policy()
+        self.generatePolicy = LIFO_Cycle_Policy(self)          #Dummy_Policy()
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler. 
