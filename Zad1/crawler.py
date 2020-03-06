@@ -17,7 +17,7 @@ from html.parser import HTMLParser
 # Dummy fetch policy. Returns first element. Does nothing ;)
 class Dummy_Policy:
     def getURL(self, c, iteration):
-        if len(c.URLs) == 0:
+        if len(c.URLs) == 1:
             return None
         else:
             return c.seedURLs[0]
@@ -33,19 +33,32 @@ class LIFO_Cycle_Policy:
         self.fetched = set([])
 
     def getURL(self, c, iteration):
-        self.fetched.add(c.toFetch)
-        if len(self.queue) == 0:
+        if len(self.queue) <= 0:
             self.queue = c.seedURLs
             self.fetched = set([])
             print("wyczyscilem\n")
 
         else:
             lastElem = self.queue[-1]
-            if lastElem in self.fetched:
+
+            while lastElem in self.fetched:
                 self.queue.remove(lastElem)
-                self.getURL(c, iteration)
-            else:
-                return lastElem
+                #print("Remove fetched: ", self.fetched)
+                #print("Quee remove: ", self.queue)
+                if len(self.queue) > 0:
+                    lastElem = self.queue[-1]
+                else:
+                    self.queue = c.seedURLs
+                    self.fetched = set([])
+                    lastElem = None
+                    #print("wyczyscilem\n")
+                    break
+
+            self.fetched.add(lastElem)
+            #print("FEtched: ", self.fetched)
+            #print("Queue: ", self.queue)
+
+            return lastElem
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pList = list(retrievedURLs)
