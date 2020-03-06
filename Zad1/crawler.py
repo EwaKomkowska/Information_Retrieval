@@ -8,6 +8,7 @@ import urllib.request as req
 import sys
 import os
 from html.parser import HTMLParser
+import numpy
 
 
 # -------------------------------------------------------------------------
@@ -63,6 +64,9 @@ class LIFO_Authority_Policy:
         self.queue = c.seedURLs
         self.fetched = set([])
         self.authorityDic = {}
+        self.p = []
+        self.allPages = []
+        self.sum = 0
 
     def getURL(self, c, iteration):
         lastElem = self.queue[-1]
@@ -80,9 +84,17 @@ class LIFO_Authority_Policy:
                 self.queue = c.seedURLs
                 self.fetched = set([])
                 for url in self.authorityDic:
-                    print(url, ":       ", self.authorityDic[url])
-                lastElem = None
+                    self.allPages.append(url)
+                    self.p.append(self.authorityDic[url])
                 break
+
+        if sum(self.p) > 0 and self.sum > 0:
+            self.sum = sum(self.p)
+            for item in range(len(self.p)):
+                self.p[item] = self.p[item] / self.sum
+
+            rand = numpy.random.choice(self.allPages, p=self.p)
+            lastElem = rand
 
         self.fetched.add(lastElem)
         return lastElem
@@ -177,7 +189,7 @@ class Container:
         # Page (URL) to be fetched next
         self.toFetch = None
         # Number of iterations of a crawler.
-        self.iterations = 6
+        self.iterations = 50
 
         # If true: store all crawled html pages in the provided directory.
         self.storePages = True
@@ -194,7 +206,7 @@ class Container:
         self.storedIncomingURLs = "/" + self.example + "/incoming/"
 
         # If True: debug
-        self.debug = True
+        self.debug = False
 
 
 def main():
