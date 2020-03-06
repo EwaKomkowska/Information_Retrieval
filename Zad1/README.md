@@ -4,12 +4,7 @@
 done<br />
 
 ###Exercise 2 (mark 4.0)<br />
-1. done<br />
-2. done<br />
-3.<br />
-4.<br />
-5.<br />
-6.<br />
+done<br />
 
 ###Exercise 3 (mark 5.0)<br />
 1.<br />
