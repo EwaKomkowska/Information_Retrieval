@@ -1,6 +1,6 @@
 ### Deadline: 11.03.20 23:59
 
-###Exercise 1 (mark 3.0)
+###Exercise 1 (mark 3.0)<br />
 done<br />
 
 ###Exercise 2 (mark 4.0)<br />
