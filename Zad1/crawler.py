@@ -24,6 +24,28 @@ class Dummy_Policy:
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pass
+    
+    
+#################################################
+class LIFO_Cycle_Policy:
+    def __init__(self, c):
+        self.queue = c.seedURLs
+        self.fetched = set([])
+        
+    def getURL(self, c, iteration):
+        if len(self.queue) == 0:
+            return None
+        else:
+            lastElem = self.queue[-1]
+            self.queue.remove(lastElem)
+            return lastElem
+            
+    def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
+        pList = list(retrievedURLs)
+        pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
+        self.queue.extend(pList)
+        if len(self.queue)==0:
+            self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
 
 #################################################
@@ -90,7 +112,7 @@ class Container:
         # The name of the crawler"
         self.crawlerName = "IRbot"
         # Example ID
-        self.example = "exercise1"
+        self.example = "exercise2"
         # Root (host) page
         self.rootPage = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + self.example
         # Initial links to visit
