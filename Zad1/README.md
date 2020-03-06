@@ -7,7 +7,7 @@ done<br />
 done<br />
 
 ###Exercise 3 (mark 5.0)<br />
-1.<br />
-2.<br />
+1. done - Ewa <br />
+2. done - Ewa <br />
 3.<br />
 4.<br />
