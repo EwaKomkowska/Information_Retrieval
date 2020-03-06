@@ -4,8 +4,8 @@
 done<br />
 
 ###Exercise 2 (mark 4.0)<br />
-1.done (on beataBranch, it will be on master at evening) <br />
-2.done (on beataBranch, it will be on master at evening) <br />
+1. done<br />
+2. done<br />
 3.<br />
 4.<br />
 5.<br />
