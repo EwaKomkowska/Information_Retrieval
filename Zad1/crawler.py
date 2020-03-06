@@ -38,19 +38,19 @@ class LIFO_Cycle_Policy:
             self.fetched = set([])
             return None
         else:
+            self.fetched.add(c.toFetch)
             lastElem = self.queue[-1]
             if lastElem in self.fetched:
                 self.queue.remove(lastElem)
                 self.getURL(c, iteration)
-                return None
-                
-            self.fetched.add(lastElem)
-            return lastElem
+            else:                
+                return lastElem
             
     def updateURLs(self, c, retrievedURLs, retrievedURLsWD, iteration):
         pList = list(retrievedURLs)
         pList.sort(key=lambda url: url[len(url) - url[::-1].index('/'):])
         self.queue.extend(pList)
+        
         if len(self.queue)==0:
             self.queue = ["http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + c.example + "/s0.html"]
 
@@ -119,7 +119,7 @@ class Container:
         # The name of the crawler"
         self.crawlerName = "IRbot"
         # Example ID
-        self.example = "exercise2"
+        self.example = "exercise3"
         # Root (host) page
         self.rootPage = "http://www.cs.put.poznan.pl/mtomczyk/ir/lab1/" + self.example
         # Initial links to visit
