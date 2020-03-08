@@ -21,9 +21,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
@@ -101,18 +99,22 @@ public class Exercise1
         System.out.println("Running exercise 1b...");
         LinkedList <String> results = new LinkedList <>();
         // TODO - kompiluje sie, ale nie znajduje żadnego numeru, dlaczego?
-        AutoDetectParser parser = new AutoDetectParser();
-        Metadata metadata = new Metadata();
-
         ZipFile file = new ZipFile ("Exercise1.zip") ;
         Enumeration entries = file.entries();
         while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
             InputStream stream = file.getInputStream(entry);
 
+            AutoDetectParser parser = new AutoDetectParser();
+            Metadata metadata = new Metadata();
+
             parser.parse(stream, new PhoneExtractingContentHandler(new DefaultHandler(), metadata), metadata);
-            metadata.getValues("phonenumbers");
-            System.out.println("koenie");
+            String[] myList = metadata.getValues("phonenumbers");
+
+            for (String s : myList) {
+                System.out.println(s);
+                results.add(s);
+            }
         }
 
         return new LinkedList <>(results);
