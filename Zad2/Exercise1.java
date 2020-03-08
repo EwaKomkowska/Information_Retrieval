@@ -1,15 +1,24 @@
+import org.apache.james.mime4j.parser.ContentHandler;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDJavascriptNameTreeNode;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.exception.TikaException;
+import org.apache.tika.metadata.Metadata;
+import org.apache.tika.parser.AutoDetectParser;
+import org.apache.tika.parser.EmptyParser;
+import org.apache.tika.parser.ParseContext;
+import org.apache.tika.sax.BasicContentHandlerFactory;
+import org.apache.tika.sax.ContentHandlerDecorator;
+import org.apache.tika.sax.ContentHandlerFactory;
+import org.apache.tika.sax.PhoneExtractingContentHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -22,6 +31,7 @@ import java.util.zip.ZipFile;
 
 public class Exercise1
 {
+
     public static void main(String[] args) throws IOException, ParserConfigurationException,
             SAXException, TikaException
     {
@@ -35,9 +45,9 @@ public class Exercise1
         System.out.println("Results of the two parses:");
         printResults(phonesByTwoParses);
 
-        //LinkedList <String> phonesByTika = exercise1b();
+        LinkedList <String> phonesByTika = exercise1b();
         System.out.println("Results of Tika:");
-        //printResults(phonesByTika);
+        printResults(phonesByTika);
     }
 
 
@@ -86,14 +96,27 @@ public class Exercise1
         return results;
     }
 
-   /* private LinkedList <String> exercise1b() throws IOException, TikaException, SAXException
+    private LinkedList <String> exercise1b() throws IOException, TikaException, SAXException
     {
         System.out.println("Running exercise 1b...");
         LinkedList <String> results = new LinkedList <>();
-        // TODO
+        // TODO - kompiluje sie, ale nie znajduje żadnego numeru, dlaczego?
+        AutoDetectParser parser = new AutoDetectParser();
+        Metadata metadata = new Metadata();
+
+        ZipFile file = new ZipFile ("Exercise1.zip") ;
+        Enumeration entries = file.entries();
+        while (entries.hasMoreElements()) {
+            ZipEntry entry = (ZipEntry) entries.nextElement();
+            InputStream stream = file.getInputStream(entry);
+
+            parser.parse(stream, new PhoneExtractingContentHandler(new DefaultHandler(), metadata), metadata);
+            metadata.getValues("phonenumbers");
+            System.out.println("koenie");
+        }
 
         return new LinkedList <>(results);
-    }*/
+    }
 
 
     private void printResults(LinkedList <String> results)
