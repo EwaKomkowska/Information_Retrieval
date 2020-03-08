@@ -1,14 +1,15 @@
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.pdfbox.tools.PDFBox;
 import org.apache.tika.exception.TikaException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -54,14 +55,18 @@ public class Exercise1
             ZipEntry entry = (ZipEntry) entries.nextElement();
             InputStream stream = file.getInputStream(entry);
 
-            if(entry.getName().contains(".pdf")) {
+            String name = entry.getName();
+
+            if(name.contains(".pdf")) {
                 PDDocument doc = PDDocument.load(stream);        //chyba powinno być ok
                 PDFTextStripper strip = new PDFTextStripper();
 
-                Pattern pattern = Pattern.compile("([0−9]{3}) ? [0−9−]+");
+                Pattern pattern = Pattern.compile("\\([0-9]{3}\\) ?[0-9-]+");
                 Matcher matcher = pattern.matcher(strip.getText(doc));
+
                 while (matcher.find()) {
                     String text = matcher.group();
+                    //System.out.println(text);     //TODO: dziala poprawnie chyba?
                     results.add(text);
                 }
             }
@@ -70,9 +75,11 @@ public class Exercise1
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document document = db.parse(stream);
 
-                NodeList list = document.getElementsByTagName("Phone");
-                for (int i = 0; i < list.getLength(); i++)
-                    results.add(document.adoptNode(list.item(i)).toString());
+                NodeList myList = document.getElementsByTagName("Phone");
+
+                for (int i=0; i < myList.getLength(); i++) {
+                    results.add(myList.item(i).getTextContent());
+                }
             }
         }
 
