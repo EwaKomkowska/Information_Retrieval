@@ -1,15 +1,8 @@
-import org.apache.james.mime4j.parser.ContentHandler;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDJavascriptNameTreeNode;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
-import org.apache.tika.parser.EmptyParser;
-import org.apache.tika.parser.ParseContext;
-import org.apache.tika.sax.BasicContentHandlerFactory;
-import org.apache.tika.sax.ContentHandlerDecorator;
-import org.apache.tika.sax.ContentHandlerFactory;
 import org.apache.tika.sax.PhoneExtractingContentHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
