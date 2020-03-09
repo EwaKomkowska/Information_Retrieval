@@ -98,7 +98,8 @@ public class Exercise1
     {
         System.out.println("Running exercise 1b...");
         LinkedList <String> results = new LinkedList <>();
-        // TODO - kompiluje sie, ale nie znajduje żadnego numeru, dlaczego?
+        // TODO
+
         ZipFile file = new ZipFile ("Exercise1.zip") ;
         Enumeration entries = file.entries();
         while (entries.hasMoreElements()) {
