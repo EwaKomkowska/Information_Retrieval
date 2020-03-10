@@ -67,7 +67,7 @@ public class Exercise1
 
                 while (matcher.find()) {
                     String text = matcher.group();
-                    //System.out.println(text);     //TODO: dziala poprawnie chyba?
+                    //System.out.println(text);
                     results.add(text);
                 }
             }
@@ -105,10 +105,7 @@ public class Exercise1
             parser.parse(stream, new PhoneExtractingContentHandler(new DefaultHandler(), metadata), metadata);
             String[] myList = metadata.getValues("phonenumbers");
 
-            for (String s : myList) {
-                System.out.println(s);
-                results.add(s);
-            }
+            Collections.addAll(results, myList);
         }
 
         return new LinkedList <>(results);
