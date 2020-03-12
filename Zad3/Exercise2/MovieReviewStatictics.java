@@ -8,7 +8,6 @@ import opennlp.tools.sentdetect.SentenceModel;
 import opennlp.tools.stemmer.PorterStemmer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.Span;
 
 import java.io.File;
@@ -136,8 +135,8 @@ public class MovieReviewStatictics
         // (update noTokens and _totalTokensCount)
         TokenizerME tokenizerME = new TokenizerME(this._tokenizerModel);
 
-        //String[] tokens = Span.spansToStrings(tokenizerME.tokenizePos(text), text);
-        String[] tokens = WhitespaceTokenizer.INSTANCE.tokenize(text);
+        String[] tokens = Span.spansToStrings(tokenizerME.tokenizePos(text), text);
+        //String[] tokens = tokenizerME.tokenize(text);
         noTokens = tokens.length;
         this._totalTokensCount += noTokens;
 
@@ -146,8 +145,7 @@ public class MovieReviewStatictics
         }*/
 
         POSTaggerME posTaggerME = new POSTaggerME(this._posModel);
-        String[] tags = posTaggerME.tag(text.split(" "));
-
+        String[] tags = posTaggerME.tag(tokens);
 
         // TODO perform stemming (use derived tokens)
         // (update noStemmed)
@@ -156,32 +154,33 @@ public class MovieReviewStatictics
         for (String token : tokens)
         {
             token = token.toLowerCase().replaceAll("[^a-z0-9]", "");
-            if (!token.equals("")) {
+
+            if (!token.equals("")) {    //thereafter, ignore "" tokens
                 stems.add(token);
             }
-            //thereafter, ignore "" tokens
         }
         noStemmed = stems.size();
 
         // TODO perform lemmatization (use derived tokens)
         // (remove "O" from results - non-dictionary forms, update noWords)
-        //TODO: czy to maja byc slowa ogolnie w tokens???
-        for (String token : tokens) {
-            if (token.toUpperCase().equals("O")) {
-                System.out.println("jestem");
-            }
+        String [] result = this._lemmatizer.lemmatize(tokens, tags);
+        int i = 0;
+        for (String s : result) {
+            if (!s.equals("O"))
+                i++;
         }
+        noWords = i;
 
         // TODO derive people, locations, organisations (use tokens),
         // (update people, locations, organisations lists).
         NameFinderME namePeople = new NameFinderME(this._peopleModel);
-//        people = namePeople.find(tokens);
+        people = namePeople.find(tokens);
 
         NameFinderME nameLocation = new NameFinderME(this._placesModel);
-//        locations = nameLocation.find(tokens);
+        locations = nameLocation.find(tokens);
 
         NameFinderME nameOrganisations = new NameFinderME(this._organizationsModel);
-//        organisations = nameOrganisations.find(tokens);
+        organisations = nameOrganisations.find(tokens);
 
 
         // TODO update overall statistics - use tags and check first letters
@@ -206,9 +205,9 @@ public class MovieReviewStatictics
         saveResults("Stemmed forms (unique)", noStemmed);
         saveResults("Words from a dictionary (unique)", noWords);
 
-        saveNamedEntities("People", people, new String[] { });
-        saveNamedEntities("Locations", locations, new String[] { });
-        saveNamedEntities("Organizations", organisations, new String[] { });
+        saveNamedEntities("People", people, tokens);
+        saveNamedEntities("Locations", locations, tokens);
+        saveNamedEntities("Organizations", organisations, tokens);
     }
 
 
