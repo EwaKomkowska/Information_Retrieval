@@ -156,7 +156,7 @@ public class MovieReviewStatictics
             token = token.toLowerCase().replaceAll("[^a-z0-9]", "");
 
             if (!token.equals("")) {    //thereafter, ignore "" tokens
-                stems.add(token);
+                stems.add(this._stemmer.stem(token));
             }
         }
         noStemmed = stems.size();
@@ -164,12 +164,16 @@ public class MovieReviewStatictics
         // TODO perform lemmatization (use derived tokens)
         // (remove "O" from results - non-dictionary forms, update noWords)
         String [] result = this._lemmatizer.lemmatize(tokens, tags);
+        Set <String> res = new HashSet<>();
         int i = 0;
         for (String s : result) {
             if (!s.equals("O"))
                 i++;
+            else
+                res.add(s);
         }
-        noWords = i;
+        noWords = res.size();
+
 
         // TODO derive people, locations, organisations (use tokens),
         // (update people, locations, organisations lists).
