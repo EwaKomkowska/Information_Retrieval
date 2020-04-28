@@ -1,15 +1,13 @@
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.IntPoint;
-import org.apache.lucene.index.DirectoryReader;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
+import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.util.BytesRef;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -44,8 +42,13 @@ public class Searcher
         {
             // --------------------------------------
             // COMPLETE THE CODE HERE
-            System.out.println("1) term query: mammal (CONTENT)");
-         
+            //System.out.println("1) term query: mammal (CONTENT)");
+                BytesRef text = analyzer.normalize(Constants.content, queryMammal);
+
+                Term term = new Term(Constants.content, text);
+                tq1 = new TermQuery(term);
+                printResultsForQuery(indexSearcher, tq1);
+
             // --------------------------------------
         }
 
@@ -55,7 +58,13 @@ public class Searcher
         TermQuery tq2;
         {
             // --------------------------------------
-            System.out.println("2) term query bird (CONTENT)");
+            //System.out.println("2) term query bird (CONTENT)");
+
+                BytesRef text = analyzer.normalize(Constants.content, queryBird);
+
+                Term term = new Term(Constants.content, text);
+                tq2 = new TermQuery(term);
+                printResultsForQuery(indexSearcher, tq2);
         
             // --------------------------------------
         }
@@ -71,6 +80,8 @@ public class Searcher
         {
             // --------------------------------------
             System.out.println("3) boolean query (CONTENT): mammal or bird");
+
+
        
             // --------------------------------------
         }
@@ -163,7 +174,28 @@ public class Searcher
         // and use document.get(name of the field) to get the value of id, filename, etc.
 
         // --------------------------------
-      
+            try {
+                TopDocs topDocs = indexSearcher.search(q, Constants.top_docs);
+
+                for (ScoreDoc doc : topDocs.scoreDocs) {
+                    //czy kazdy doc w osobnej czy kazda rzecz w osobnej?
+                    Document document = indexSearcher.doc(doc.doc);
+
+
+                    //zrobione wg pdf'a
+                    System.out.println(doc.score + ": " +
+                            document.get(Constants.filename) +
+                            " (ID=" + document.get(Constants.id) +
+                            //") (Content=" + document.get(Constants.content) +       //content był nie do zapisu wiec zawsze null
+                            ") (Size=" + document.get(Constants.filesize) + ")"
+                    );
+                }
+                System.out.println();       //dla czytelnosci
+
+            } catch (IOException e) {
+                System.out.println("You can't have an access");
+            }
+
         // --------------------------------
     }
 
