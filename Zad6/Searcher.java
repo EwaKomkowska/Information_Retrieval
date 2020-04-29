@@ -1,6 +1,7 @@
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.IntPoint;
 import org.apache.lucene.index.*;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -42,7 +43,7 @@ public class Searcher
         {
             // --------------------------------------
             // COMPLETE THE CODE HERE
-            //System.out.println("1) term query: mammal (CONTENT)");
+            System.out.println("1) term query: mammal (CONTENT)");
                 BytesRef text = analyzer.normalize(Constants.content, queryMammal);
 
                 Term term = new Term(Constants.content, text);
@@ -58,7 +59,7 @@ public class Searcher
         TermQuery tq2;
         {
             // --------------------------------------
-            //System.out.println("2) term query bird (CONTENT)");
+            System.out.println("2) term query bird (CONTENT)");
 
                 BytesRef text = analyzer.normalize(Constants.content, queryBird);
 
@@ -76,12 +77,16 @@ public class Searcher
         // Additionally, use setMinimumNumberShouldMatch() with a proper parameter
         // to generate "mammal" or "bird" rule.
 
-        // Boolean query
+        // Boolean query;
         {
             // --------------------------------------
             System.out.println("3) boolean query (CONTENT): mammal or bird");
 
-
+                BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
+                booleanQuery.add(tq1, BooleanClause.Occur.SHOULD);          //ponieważ jest OR - to chyba NIE MUSI tylko MOŻE
+                booleanQuery.add(tq2, BooleanClause.Occur.SHOULD);
+                BooleanQuery tq3 = booleanQuery.build();
+                printResultsForQuery(indexSearcher, tq3);
        
             // --------------------------------------
         }
@@ -92,6 +97,9 @@ public class Searcher
         {
             // --------------------------------------
             System.out.println("4) range query: file size in [0b, 1000b]");
+
+                Query tq4 = IntPoint.newRangeQuery(Constants.filesize, 0, 1000);
+                printResultsForQuery(indexSearcher, tq4);
           
             // --------------------------------------
         }
@@ -101,6 +109,10 @@ public class Searcher
         {
             // --------------------------------------
             System.out.println("5) Prefix query (FILENAME): ant");
+
+                Term term = new Term(Constants.filename, "ant");
+                Query tq5 = new PrefixQuery(term);
+                printResultsForQuery(indexSearcher, tq5);
          
             // --------------------------------------
         }
@@ -111,6 +123,10 @@ public class Searcher
         {
             // --------------------------------------
             System.out.println("6) Wildcard query (CONTENT): eat?");
+
+                Term eat = new Term(Constants.content, "eat?");     //czy mamy szukać pojedynczej czy wielu liter za eat?
+                WildcardQuery tq6 = new WildcardQuery(eat);
+                printResultsForQuery(indexSearcher, tq6);
     
             // --------------------------------------
         }
@@ -121,6 +137,10 @@ public class Searcher
         {
             // --------------------------------------
             System.out.println("7) Fuzzy querry (CONTENT): mamml?");
+
+                Term term = new Term(Constants.content, "mamml~");       //czy o to chodziło? bo ma być taki sam czyli bez znaków później?
+                FuzzyQuery tq7 = new FuzzyQuery(term);
+                printResultsForQuery(indexSearcher, tq7);
      
             // --------------------------------------
         }
@@ -139,12 +159,23 @@ public class Searcher
         String queryP4 = "(\"nocturnal life\"~10) OR bat";
         String queryP5 = "(\"nocturnal life\"~10) OR (\"are nocturnal\"~10)";
         // Select some query:
-        String selectedQuery = queryP1;
+        String selectedQuery = queryP5;
         // Complete the code here, i.e., build query parser object, parse selected query
         // to query object, and find relevant documents. Analyze the outcomes.
         {
             // --------------------------------------
             System.out.println("8) query parser = " + selectedQuery);
+
+                QueryParser parser = new QueryParser(Constants.content, analyzer);          //najsensowniejsze wydaje mi się przeszukiwanie calosci?
+                try {
+
+                    Query tq8 = parser.parse(selectedQuery);
+                    //System.out.println(tq8);
+                    printResultsForQuery(indexSearcher, tq8);
+
+                } catch (Exception e) {
+                    System.out.println("You can't parse this text");
+                }
      
             // --------------------------------------
         }
